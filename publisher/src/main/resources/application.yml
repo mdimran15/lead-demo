@@ -1,0 +1,19 @@
+server:
+  port: 9090
+  servlet:
+    contextPath: /pub
+spring:
+  rabbitmq:
+    host: localhost
+    password: guest
+    port: 5672
+    username: guest
+    exchange: lead_exchange
+    queue: lead_queue
+    routingkey: lead_routingkey
+
+logging:
+  level:
+    com.tej.publisher:
+      controller: TRACE
+
