@@ -9,8 +9,10 @@ spring:
     port: 15672
     username: guest
     exchange: lead_exchange
-    queue: lead_queue
-    routingkey: lead_routingkey
+    emailQueue: email_queue
+    mobileQueue: mobile_queue
+    emailRoutingKey: email_routingkey
+    mobileRoutingKey: mobile_routingkey
 
 logging:
   level:

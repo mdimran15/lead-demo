@@ -15,15 +15,27 @@ public class MessageReciever implements RabbitListenerConfigurer{
 
     private static final Logger logger = LoggerFactory.getLogger(MessageReciever.class);
 
-    @RabbitListener(queues = "${spring.rabbitmq.queue}")
-    public void receivedMessage(Lead user) {
-        Notification notification = NotificationFactory.createInstance(user.getPreferred_mobile_communication_mode());
-        notification.notifyUser(user);
-        logger.info("User Details Received is.. {}" , user);
+    @RabbitListener(queues = "${spring.rabbitmq.mobileQueue}")
+    public void receivedMobileMessage(Lead lead) {
+        logger.info("entering into receivedMobileMessage");
+        try {
+            Notification notification = NotificationFactory.createInstance(lead.getPreferred_mobile_communication_mode());
+            notification.notifyUser(lead);
+
+        }catch (IllegalArgumentException ex){
+            logger.error("error occurred in receivedMobileMessage {}",ex.getMessage());
+        }
+    }
+
+    @RabbitListener(queues = "${spring.rabbitmq.emailQueue}")
+    public void receiveEmailMessage(Lead lead) {
+        logger.info("entering into receiveEmailMessage");
+        //Subscriber 1: [Channel: Email] [LeadID: 12345] [Message: Email Sent]
+        logger.info("Subscriber 1: [Channel: Email] [LeadID: "+lead.getLead_id()+" ] [Message: Email Sent]");
     }
 
     @Override
     public void configureRabbitListeners(RabbitListenerEndpointRegistrar rabbitListenerEndpointRegistrar) {
-        logger.info("entring into configureRabbitListeners");
+        logger.info("entering into configureRabbitListeners");
     }
 }

@@ -13,14 +13,20 @@ import org.springframework.amqp.support.converter.MessageConverter;
 @Configuration
 public class SubscriberConfig {
 
-    @Value("${spring.rabbitmq.queue}")
-    private String queue;
+    @Value("${spring.rabbitmq.emailQueue}")
+    private String emailQueue;
+
+    @Value("${spring.rabbitmq.mobileQueue}")
+    private String mobileQueue;
 
     @Value("${spring.rabbitmq.exchange}")
     private String exchange;
 
-    @Value("${spring.rabbitmq.routingkey}")
-    private String routingKey;
+    @Value("${spring.rabbitmq.emailRoutingKey}")
+    private String emailRoutingKey;
+
+    @Value("${spring.rabbitmq.mobileRoutingKey}")
+    private String mobileRoutingKey;
 
     @Value("${spring.rabbitmq.username}")
     private String username;
@@ -32,23 +38,43 @@ public class SubscriberConfig {
     private String host;
 
     @Bean
-    Queue queue() {
-        return new Queue(queue, true);
+    public Queue emailQueue() {
+        return new Queue(this.emailQueue, true);
     }
 
     @Bean
-    Exchange myExchange() {
+    public Queue mobileQueue() {
+        return new Queue(this.mobileQueue, true);
+    }
+
+    @Bean
+    public DirectExchange directExchange() {
+        return ExchangeBuilder.directExchange(exchange).durable(true).build(); // new DirectExchange(this.exchange);
+    }
+
+    /*@Bean
+    Exchange myExchange() {DirectExchange
         return ExchangeBuilder.directExchange(exchange).durable(true).build();
+    }*/
+
+    @Bean
+    public Binding bindingEmail() {
+        return BindingBuilder.bind(emailQueue()).to(directExchange()).with(this.emailRoutingKey);
     }
 
     @Bean
+    public Binding bindingMobile(DirectExchange directExchange, Queue mobileQueue) {
+        return BindingBuilder.bind(mobileQueue).to(directExchange).with(this.mobileRoutingKey);
+    }
+
+   /* @Bean
     Binding binding() {
         return BindingBuilder
                 .bind(queue())
                 .to(myExchange())
                 .with(routingKey)
                 .noargs();
-    }
+    }*/
 
     @Bean
     public ConnectionFactory connectionFactory() {
