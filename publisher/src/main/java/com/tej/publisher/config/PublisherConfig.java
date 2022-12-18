@@ -8,8 +8,11 @@ public final class PublisherConfig {
 
     @Value("${spring.rabbitmq.exchange}")
     private String exchange;
-    @Value("${spring.rabbitmq.routingkey}")
-    private String routingKey;
+    @Value("${spring.rabbitmq.emailRoutingKey}")
+    private String emailRoutingKey;
+
+    @Value("${spring.rabbitmq.mobileRoutingKey}")
+    private String mobileRoutingKey;
 
     @Value("${spring.rabbitmq.host}")
     private String host;
@@ -42,8 +45,12 @@ public final class PublisherConfig {
         return password;
     }
 
-    public String getRoutingKey() {
-        return routingKey;
+    public String getEmailRoutingKey() {
+        return emailRoutingKey;
+    }
+
+    public String getMobileRoutingKey() {
+        return mobileRoutingKey;
     }
 
     public String getPort() {

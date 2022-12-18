@@ -31,7 +31,12 @@ public class LeadServiceImpl implements LeadService{
         LeadValidator.validateLead(leadDTO);
         // convert dto to domain object
         try{
-            rabbitTemplate.convertAndSend(config.getExchange(),config.getRoutingKey(), leadDTO);
+            if(leadDTO.getLead_email_id() != null){
+                rabbitTemplate.convertAndSend(config.getExchange(),config.getEmailRoutingKey(), leadDTO);
+            }if(leadDTO.getLead_mobile_number() != null){
+                rabbitTemplate.convertAndSend(config.getExchange(),config.getMobileRoutingKey(), leadDTO);
+            }
+
             LeadResponse leadResponse = new LeadResponse();
             leadResponse.setLead_id(leadDTO.getLead_id());
             leadResponse.setCode(PublisherUtil.PUBLISHED); // we can use enum
